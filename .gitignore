@@ -100,3 +100,5 @@ ENV/
 .idea/modules.xml
 .idea/pfm.iml
 .idea/workspace.xml
+.idea/dictionaries/yizhq.xml
+.idea/vcs.xml
