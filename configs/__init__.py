@@ -26,13 +26,3 @@
 #
 #               Please, Do not go wrong!!!
 '''
-
-from flask import render_template
-from . import home
-from ..decorators import generate_csrf_token
-
-@home.route('/')
-@home.route('/<path:url>')
-@generate_csrf_token
-def home_index(url=None):
-    return render_template('/window.html', title="PFM Test")

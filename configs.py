@@ -29,6 +29,7 @@
 import os
 import logging
 basedir = os.path.abspath(os.path.dirname(__file__))
+workdir = "opt/work/web/xenwebsite/data/"
 
 class Config:
     APP_CACHE = {'host': '10.75.0.61', 'port': 6379, 'db': 0}
@@ -58,21 +59,15 @@ class Config:
 
 class DevConfig(Config):
     DEBUG = True
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S',
-                        filemode='a')
-    dev_host = '0.0.0.0'
-    dev_port = 5001
+
+    from app.configs.dev_configs import *
 
 
 class TestConfig(Config):
     TESTING = True
 
-    logging.basicConfig(level=logging.WARNING,
-                        format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S',
-                        filemode='a')
+    from app.configs.test_configs import *
+
 
 class ProductionConfig(Config):
     @classmethod

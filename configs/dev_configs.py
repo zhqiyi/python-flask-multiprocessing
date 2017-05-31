@@ -26,13 +26,25 @@
 #
 #               Please, Do not go wrong!!!
 '''
+import os
+import logging
 
-from flask import render_template
-from . import home
-from ..decorators import generate_csrf_token
+basedir = os.path.abspath(os.path.dirname(__file__))
+workdir = "opt/work/web/xenwebsite/data/"
 
-@home.route('/')
-@home.route('/<path:url>')
-@generate_csrf_token
-def home_index(url=None):
-    return render_template('/window.html', title="PFM Test")
+
+''' Logging settings '''
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    filemode='a')
+
+''' System settings '''
+NTP_SERVER = 'pool.ntp.org'
+
+
+''' Database settings '''
+SQLITE_DATABASE_URI = os.environ.get('DEV_SQLITE_URL') or \
+                      'sqlite:///' + os.path.join(workdir, 'update.db')
+POSTGRESQL_DATABASE_URI = os.environ.get('DEV_POSTGRESQL_URL') or \
+                          'postgresql://postgres:postgres@10.75.0.61:5432/skynet'

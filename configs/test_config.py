@@ -26,18 +26,25 @@
 #
 #               Please, Do not go wrong!!!
 '''
+import os
+import logging
 
-'''
-    Run in one process, light app
-'''
+basedir = os.path.abspath(os.path.dirname(__file__))
+workdir = "opt/work/web/xenwebsite/data/"
 
-from app.apps import run_app
 
-def execute_manager():
-    run_app()
+''' Logging settings '''
+logging.basicConfig(level=logging.WARNING,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    filemode='a')
 
-def main():
-    execute_manager()
+''' System settings '''
+NTP_SERVER = 'pool.ntp.org'
 
-if __name__ == "__main__":
-    main()
+
+''' Database settings '''
+SQLITE_DATABASE_URI = os.environ.get('DEV_SQLITE_URL') or \
+                      'sqlite:///' + os.path.join(workdir, 'update.db')
+POSTGRESQL_DATABASE_URI = os.environ.get('DEV_POSTGRESQL_URL') or \
+                          'postgresql://postgres:postgres@10.75.0.61:5432/skynet'

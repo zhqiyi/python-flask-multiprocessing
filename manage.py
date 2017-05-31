@@ -45,7 +45,7 @@ from app.models import Permission
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app = create_app("pfm_flask_app", os.getenv('XXXXX_CONFIG') or 'default')
 manager = Manager(app)
 
 
@@ -57,7 +57,7 @@ manager.add_command('db', MigrateCommand)
 
 
 @manager.command
-def test(coverage=False):
+def api_test(coverage=False):
     """Run the unit tests."""
     if coverage and not os.environ.get('FLASK_COVERAGE'):
         import sys
@@ -84,6 +84,14 @@ def profile(length=25, profile_dir=None):
     from werkzeug.contrib.profiler import ProfilerMiddleware
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length],
                                       profile_dir=profile_dir)
+    app.run()
+
+
+@manager.command
+def development():
+    """Start the application with proxyfix."""
+    from werkzeug.contrib.fixers import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app)
     app.run()
 
 
