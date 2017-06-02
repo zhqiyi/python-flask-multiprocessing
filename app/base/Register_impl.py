@@ -33,7 +33,7 @@ import app
 
 class Register_impl(object):
     def __init__(self, app, exclude_packages=list()):
-        core_packages = ["base"]
+        core_packages = ["base", "utils", "gmodels", "languages"]
         core_packages.extend(exclude_packages)
         self.flask_app = app
         self.core_packages = core_packages
@@ -53,9 +53,7 @@ class Register_impl(object):
             try:
                 module = __import__(module_name, fromlist=["views"])
                 reg = getattr(module, package)
-                self.flask_app.register_blueprint(reg, url_prefix="/pfm/" + package,
-                                                  template_folder='/Users/yizhq/工作/02-项目/04-selfcodes/pfm/app/templates/',
-                                                  static_folder='/Users/yizhq/工作/02-项目/04-selfcodes/pfm/app/static') if reg and package else None
+                self.flask_app.register_blueprint(reg, url_prefix="/pfm/" + package) if reg and package else None
 
             except Exception, e:
                 logging.warn("Register: " + str(module_name) + ":" + str(e), exc_info=1)

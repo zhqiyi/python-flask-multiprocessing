@@ -26,9 +26,11 @@
 #
 #               Please, Do not go wrong!!!
 '''
+import sys
 import logging
 import uuid
 import hashlib
+import inspect, os
 from datetime import datetime
 from functools import wraps
 from flask import g, session, request, jsonify, current_app, render_template
@@ -48,3 +50,16 @@ def token_uuid():
     uid = str(uuid.uuid1())
     uname = session.get('username', '')
     return hashlib.md5(uid+uname).hexdigest()
+
+def pfm_debug_logging(f):
+    @wraps(f)
+    def make_logging(*args, **kwargs):
+
+        caller_file = inspect.stack()[1][1]
+        script_path = os.path.abspath(os.path.dirname(caller_file))
+
+        logging.debug('\ncurrent method: %s;\ncurrent script: %s;\n'
+                      % (f.__name__, script_path), exc_info=True)
+
+        return f(*args, **kwargs)
+    return make_logging

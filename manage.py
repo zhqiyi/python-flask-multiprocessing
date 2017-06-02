@@ -45,9 +45,10 @@ from app.models import Permission
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
-app = create_app("pfm_flask_app", os.getenv('XXXXX_CONFIG') or 'default')
-manager = Manager(app)
 
+app, db = create_app("pfm_flask_app", os.getenv('XXXXX_CONFIG') or 'default')
+manager = Manager(app)
+migrate = Migrate(app, db)
 
 def make_shell_context():
     return dict(app=app,
@@ -84,7 +85,7 @@ def profile(length=25, profile_dir=None):
     from werkzeug.contrib.profiler import ProfilerMiddleware
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length],
                                       profile_dir=profile_dir)
-    app.run()
+    app.run(host='0.0.0.0', port=5001)
 
 
 @manager.command
@@ -92,14 +93,16 @@ def development():
     """Start the application with proxyfix."""
     from werkzeug.contrib.fixers import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app)
-    app.run()
+    app.run(host='0.0.0.0', port=5001)
 
 
 @manager.command
 def deploy():
     """Run deployment tasks."""
     from flask_migrate import upgrade
+    from app.models import User
 
+    upgrade()
 
 if __name__ == '__main__':
     manager.run()

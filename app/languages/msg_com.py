@@ -26,25 +26,22 @@
 #
 #               Please, Do not go wrong!!!
 '''
-import os
-import logging
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-workdir = "opt/work/web/xenwebsite/data/"
+class Com_msg_zh:
 
-
-''' Logging settings '''
-logging.basicConfig(level=logging.WARNING,
-                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S',
-                    filemode='a')
-
-''' System settings '''
-NTP_SERVER = 'pool.ntp.org'
+        Err_app_and_db = u'应用或数据实例为空, 请确认!',
+        Err_add_user = u'用户名或密码为空, 请重新输入!'
 
 
-''' Database settings '''
-SQLITE_DATABASE_URI = os.environ.get('DEV_SQLITE_URL') or \
-                      'sqlite:///' + os.path.join(workdir, 'update.db')
-POSTGRESQL_DATABASE_URI = os.environ.get('DEV_POSTGRESQL_URL') or \
-                          'postgresql://postgres:postgres@10.75.0.61:5432/skynet'
+class Com_msg_en:
+
+        Err_app_and_db = u'The instance of app or database is empty, please confirm!',
+        Err_add_user = u'The user name or password is empty, please input again!'
+
+'''
+    public obj
+'''
+msg_com = {
+    'zh': Com_msg_zh,
+    'en': Com_msg_en
+}

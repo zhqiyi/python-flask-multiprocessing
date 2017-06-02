@@ -26,17 +26,28 @@
 #
 #               Please, Do not go wrong!!!
 '''
+import unittest
+from app.apps import create_app
+from app.models import User
 
-from .utils.db import (Base, Column, Integer, String, DateTime, BigInteger, TEXT, BIGINT, FLOAT, ForeignKey, JSONB,
-                  relationship)
-from .gmodels.model_user import User
 
-class Permission:
-    FOLLOW = 0x01
-    COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
-    ADMINISTER = 0x80
+class ModelsAPITest(unittest.TestCase):
 
-''' Table's mapping '''
-mapped_class_dic = dict(update_log=User)
+    def setUp(self):
+        app, db = create_app('test_app', 'testing')
+        self.app = app
+        self.db = db.make_session()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        # self.db.create_all()
+
+
+    def tearDown(self):
+        self.db.close()
+        # self.db.drop_all()
+        self.app_context.pop()
+
+    def test_user_add(self):
+        ret = User.add(self.app, self.db, 'yizhq', u'仪智奇', 15, '')
+        print ret
+        # self.assertTrue(ret.status is not False)

@@ -31,6 +31,24 @@ import logging
 basedir = os.path.abspath(os.path.dirname(__file__))
 workdir = "opt/work/web/xenwebsite/data/"
 
+"""Base settings content"""
+import time
+import os
+from lockfile import LockFile
+
+
+def delete_old_lock_file(lock_filepath):
+    real_path = lock_filepath + ".lock"
+    if not os.path.exists(real_path):
+        return
+    try:
+        stat = os.stat(real_path)
+        current_time = time.time()
+        if (current_time - stat.st_ctime) > 60:
+            os.remove(real_path)
+    except OSError:
+        return
+
 class Config:
     APP_CACHE = {'host': '10.75.0.61', 'port': 6379, 'db': 0}
     APP_SESSION = {'host': '10.75.0.61', 'port': 6379, 'db': 1}
@@ -52,6 +70,17 @@ class Config:
     FLASKY_FOLLOWERS_PER_PAGE = 50
     FLASKY_COMMENTS_PER_PAGE = 30
     FLASKY_SLOW_DB_QUERY_TIME=0.5
+    '''
+        语言设置
+    '''
+    LANGUAGE_SET = 'ZH'
+    '''
+        锁文件设置
+    '''
+    CONFIG_SETTINGS_DIR = basedir
+    file_lock_path = os.path.join(CONFIG_SETTINGS_DIR, "file.lock")
+    delete_old_lock_file(file_lock_path)
+    PROCESS_FILE_LOCK = LockFile(file_lock_path)
 
     @staticmethod
     def init_app(app):
@@ -60,13 +89,42 @@ class Config:
 class DevConfig(Config):
     DEBUG = True
 
-    from app.configs.dev_configs import *
+    ''' Logging settings '''
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S',
+                        filemode='a')
+
+    ''' System settings '''
+    '''
+        时间服务器
+    '''
+    NTP_SERVER = 'pool.ntp.org'
+
+    ''' Database settings '''
+    SQLITE_DATABASE_URI = os.environ.get('DEV_SQLITE_URL') or \
+                          'sqlite:///' + os.path.join(workdir, 'update.db')
+    POSTGRESQL_DATABASE_URI = os.environ.get('DEV_POSTGRESQL_URL') or \
+                              'postgresql://postgres:postgres@localhost:5432/pfm'
 
 
 class TestConfig(Config):
     TESTING = True
 
-    from app.configs.test_configs import *
+    ''' Logging settings '''
+    logging.basicConfig(level=logging.WARNING,
+                        format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S',
+                        filemode='a')
+
+    ''' System settings '''
+    NTP_SERVER = 'pool.ntp.org'
+
+    ''' Database settings '''
+    SQLITE_DATABASE_URI = os.environ.get('DEV_SQLITE_URL') or \
+                          'sqlite:///' + os.path.join(workdir, 'update.db')
+    POSTGRESQL_DATABASE_URI = os.environ.get('DEV_POSTGRESQL_URL') or \
+                              'postgresql://postgres:postgres@localhost:5432/pfm'
 
 
 class ProductionConfig(Config):
@@ -92,6 +150,7 @@ class ProductionConfig(Config):
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
+
 class UnixConfig(ProductionConfig):
     @classmethod
     def init_app(cls, app):
@@ -103,6 +162,7 @@ class UnixConfig(ProductionConfig):
         syslog_handler = SysLogHandler()
         syslog_handler.setLevel(logging.WARNING)
         app.logger.addHandler(syslog_handler)
+
 
 config = {
     'development': DevConfig,
