@@ -105,7 +105,7 @@ class DevConfig(Config):
     SQLITE_DATABASE_URI = os.environ.get('DEV_SQLITE_URL') or \
                           'sqlite:///' + os.path.join(workdir, 'update.db')
     POSTGRESQL_DATABASE_URI = os.environ.get('DEV_POSTGRESQL_URL') or \
-                              'postgresql://postgres:postgres@localhost:5432/pfm'
+                              'postgresql://postgres:postgres@localhost:5432/pfmV01'
 
 
 class TestConfig(Config):
@@ -124,7 +124,7 @@ class TestConfig(Config):
     SQLITE_DATABASE_URI = os.environ.get('DEV_SQLITE_URL') or \
                           'sqlite:///' + os.path.join(workdir, 'update.db')
     POSTGRESQL_DATABASE_URI = os.environ.get('DEV_POSTGRESQL_URL') or \
-                              'postgresql://postgres:postgres@localhost:5432/pfm'
+                              'postgresql://postgres:postgres@localhost:5432/pfmV01'
 
 
 class ProductionConfig(Config):

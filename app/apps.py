@@ -36,7 +36,7 @@ from app.base.register_impl import Register_impl
 from flask import Flask, g
 from utils.db.postgredb import DbClass
 from configs import config
-from .languages.language_impl import Language_IMPL, language
+# from .languages.language_impl import Language_IMPL, language
 from .decorators import pfm_debug_logging
 
 global db
@@ -107,7 +107,7 @@ def init_app(app_name=None, config_name=None):
     app.config.from_object(config[config_name])
 
     # init language
-    Language_IMPL().init_language(app.config.__getitem__("LANGUAGE_SET"))
+    # Language_IMPL().init_language(app.config.__getitem__("LANGUAGE_SET"))
     # app.lang.from_object(language)
 
     # initialize database
