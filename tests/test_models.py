@@ -48,6 +48,6 @@ class ModelsAPITest(unittest.TestCase):
         self.app_context.pop()
 
     def test_user_add(self):
-        ret = User.add(self.app, self.db, 'yizhq', u'仪智奇', 15, '')
-        print ret
-        # self.assertTrue(ret.status is not False)
+        u = User(username='yizhq', username_zh='仪智奇', user_age=15, password='123456789')
+        self.db.add(u)
+        self.db.commit()

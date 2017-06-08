@@ -37,7 +37,7 @@ from flask import Flask, g
 from utils.db.postgredb import DbClass
 from configs import config
 # from .languages.language_impl import Language_IMPL, language
-from .decorators import pfm_debug_logging
+# from .decorators import pfm_debug_logging
 
 global db
 
@@ -94,7 +94,7 @@ def _init_database(app, db):
     """init database"""
     pass
 
-@pfm_debug_logging
+# @pfm_debug_logging
 def init_app(app_name=None, config_name=None):
     """create app"""
 

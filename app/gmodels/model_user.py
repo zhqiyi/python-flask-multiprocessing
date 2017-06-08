@@ -33,11 +33,11 @@ from ..utils.db import (Base, Column, Integer, String, DateTime, BigInteger, TEX
 class User(Base):
     __tablename__ = 't_user'
 
-    _id = Column('id', Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
-    _username = Column('username', String(50), nullable=False, unique=True)
-    _username_zh = Column('username_zh', String(50), primary_key=False, nullable=False)
-    _user_age = Column('user_age', Integer, primary_key=False, nullable=False)
-    _password =  Column('password', String(150), primary_key=False, nullable=False)
+    _id = Column('id', Integer, primary_key=True, nullable=False, autoincrement=True)
+    _username = Column('username', String(50), nullable=True, unique=True)
+    _username_zh = Column('username_zh', String(50), nullable=False)
+    _user_age = Column('user_age', Integer, nullable=False)
+    _password =  Column('password', String(150), nullable=False)
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
