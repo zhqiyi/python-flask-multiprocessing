@@ -58,7 +58,7 @@ manager.add_command('db', MigrateCommand)
 
 
 @manager.command
-def api_test(coverage=False):
+def tests(coverage=False):
     """Run the unit tests."""
     if coverage and not os.environ.get('FLASK_COVERAGE'):
         import sys

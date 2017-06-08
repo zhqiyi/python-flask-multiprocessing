@@ -26,71 +26,80 @@
 #
 #               Please, Do not go wrong!!!
 '''
-import simplejson as json
+from werkzeug.security import (generate_password_hash, check_password_hash)
 from ..utils.db import (Base, Column, Integer, String, DateTime, BigInteger, TEXT, BIGINT, FLOAT, ForeignKey, JSONB,
                         relationship)
 
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = 't_user'
 
-    id = Column('id', Integer, primary_key=True, nullable=False, autoincrement=True)
-    username = Column('username', String(50), primary_key=False, nullable=False)
-    username_zh = Column('username_zh', String(50), primary_key=False, nullable=False)
-    user_age = Column('user_age', Integer, primary_key=False, nullable=False)
-    password =  Column('password', String(150), primary_key=False, nullable=False)
+    _id = Column('id', Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
+    _username = Column('username', String(50), nullable=False, unique=True)
+    _username_zh = Column('username_zh', String(50), primary_key=False, nullable=False)
+    _user_age = Column('user_age', Integer, primary_key=False, nullable=False)
+    _password =  Column('password', String(150), primary_key=False, nullable=False)
 
-    def __init__(self, id=None, username=None, username_zh=None, user_age=None, password=None):
-        self.id = id
-        self.username = username
-        self.username_zh = username_zh
-        self.user_age = user_age
-        self.password = password
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
 
     def __repr__(self):
         return "<User('{0}','{1}','{2}','{3}','{4}')>" % self.id, \
                self.username, self.username_zh, self.user_age, self.password
 
-    '''
-        API for User
-    '''
+    # @property
+    # def id(self):
+    #     return self._id
 
-    @staticmethod
-    def add(app=None, db=None, username=None, username_zh=None, user_age=None, password=None):
-        '''
+    # @id.setter
+    # def id(self, value):
+    #     raise AttributeError('id( is not a writeable attribute.')
 
-        :param g: flask_app's g
-        :param username: The english name
-        :param username_zh: The chinese name
-        :param user_age: User age
-        :param password: User's password
-        :return:
-        '''
-        result = {"status": "", "message": ""}
+    @property
+    def user_age(self):
+        return self._user_age
 
-        if app is None or db is None:
-            result["status"] = False
-            result["message"] = app.lang.com_msg.__getitem__('Err_app_and_db')
-            return result
+    @user_age.setter
+    def user_age(self, value):
+        self._user_age = value
 
-        if username is None or password is None or username == '' or password == '':
-            result["status"] = False
-            result["message"] = app.lang.com_msg.__getitem__('Err_add_user')
-            return result
+    @property
+    def username_zh(self):
+        return self._username_zh
 
-        return True
+    @username_zh.setter
+    def username_zh(self, value):
+        self._username_zh = value
 
-    @staticmethod
-    def delete():
-        return True
+    @property
+    def username(self):
+        return self._username
 
-    @staticmethod
-    def modify():
-        return True
+    @username.setter
+    def username(self, value):
+        self._username = value
 
-    @staticmethod
-    def query():
-        return True
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute.')
 
-    '''
-        Private method
-    '''
+    @password.setter
+    def password(self, value):
+
+        if not isinstance(value, str):
+            raise ValueError('password must be a string.')
+
+        if len(value) > 16 and len(value) < 6:
+            raise ValueError('password\'s length must between 6 to 16.')
+
+        self._password = generate_password_hash(value)
+
+    @property
+    def role(self):
+        return self._role
+
+    @password.setter
+    def role(self, value):
+        self._role = value
+
+    def verify_password(self, password):
+        return check_password_hash(password)
