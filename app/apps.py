@@ -39,10 +39,10 @@ from configs import config
 # from .languages.language_impl import Language_IMPL, language
 # from .decorators import pfm_debug_logging
 
-global db
+db = DbClass()
 
 class WingsAppHolder(object):
-    def __init__(self, app, db):
+    def __init__(self, app):
         """init before request"""
         self.app = app
         self.db = db
@@ -85,12 +85,12 @@ class WingsAppHolder(object):
             logging.warn("[{0} {1}] an exception occurred to this request: {2}".
                          format("app.py", "WingsAppHolder", exception), exc_info=1)
 
-def _bind_database(app, db):
+def _bind_database(app):
     """bind database"""
-    return WingsAppHolder(app, db)
+    return WingsAppHolder(app)
 
 
-def _init_database(app, db):
+def _init_database(app):
     """init database"""
     pass
 
@@ -111,20 +111,21 @@ def init_app(app_name=None, config_name=None):
     # app.lang.from_object(language)
 
     # initialize database
-    db = DbClass(app.config.__getitem__("POSTGRESQL_DATABASE_URI"))
-    with app.config.__getitem__("PROCESS_FILE_LOCK"):
-        _init_database(app, db)
-    _bind_database(app, db)
+    db.init_app(app.config.__getitem__("POSTGRESQL_DATABASE_URI"))
 
-    return app, db
+    with app.config.__getitem__("PROCESS_FILE_LOCK"):
+        _init_database(app)
+    _bind_database(app)
+
+    return app
 
 """create flask app."""
 def create_app(app_name=None, config_name=None):
-    app, db = init_app(app_name, config_name)
+    app = init_app(app_name, config_name)
     # app.cache = Redis_impl(**APP_CACHE)
     # app.session = Redis_impl(**APP_SESSION)
     # app.session_interface = Session_impl()
     Register_impl(app)
 
-    return app, db
+    return app
 

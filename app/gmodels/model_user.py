@@ -30,7 +30,7 @@ from werkzeug.security import (generate_password_hash, check_password_hash)
 from ..utils.db import (Base, Column, Integer, String, DateTime, BigInteger, TEXT, BIGINT, FLOAT, ForeignKey, JSONB,
                         relationship)
 
-class User(Base):
+class _User(Base):
     __tablename__ = 't_user'
 
     _id = Column('id', Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -38,13 +38,14 @@ class User(Base):
     _username_zh = Column('username_zh', String(50), nullable=False)
     _user_age = Column('user_age', Integer, nullable=False)
     _password =  Column('password', String(150), nullable=False)
+    _role =  Column('role', Integer, ForeignKey('t_role.id'))
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(_User, self).__init__(**kwargs)
 
-    def __repr__(self):
-        return "<User('{0}','{1}','{2}','{3}','{4}')>" % self.id, \
-               self.username, self.username_zh, self.user_age, self.password
+    # def __repr__(self):
+    #     mes = '<_User %s, %s)>' % (self._username, self._role)
+    #     return mes
 
     # @property
     # def id(self):

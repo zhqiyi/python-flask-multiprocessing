@@ -26,6 +26,7 @@
 #
 #               Please, Do not go wrong!!!
 '''
+from app.utils.db import Base
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
@@ -33,10 +34,13 @@ from app.models import *
 
 
 class DbClass(object):
-    def __init__(self, uri):
+    def __init__(self):
+        pass
+
+    def init_app(self, uri):
         self._engine = create_engine(uri, echo=False, encoding="utf-8", max_overflow=30, pool_size=10)
         self._metadata = Base.metadata
-        self.metadata = self._metadata
+        # self.metadata = self._metadata
 
     def create_table(self):
         self._metadata.create_all(self._engine)

@@ -26,19 +26,31 @@
 #
 #               Please, Do not go wrong!!!
 '''
+from ..utils.db import (Base, Column, Integer, String, DateTime, BigInteger, TEXT, BIGINT, FLOAT, ForeignKey, JSONB,
+                        relationship)
 
-from .gmodels.model_user import _User as User
-from .gmodels.model_role import _Role as Role
 
-class Permission:
-    FOLLOW = 0x01
-    COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
-    ADMINISTER = 0x80
+class _Role(Base):
+    __tablename__ = 't_role'
 
-''' Table's mapping '''
-mapped_class_dic = dict(
-                        t_role=Role,
-                        t_user=User
-                        )
+    _id = Column('id', Integer, autoincrement=True, primary_key=True, nullable=False)
+    _role = Column('role', String(50), nullable=False, unique=True)
+
+    def __init__(self, **kwargs):
+        super(_Role, self).__init__(**kwargs)
+
+
+    # def __repr__(self):
+    #     return '<_Role %r, %r>' % (self._id, self._role)
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def role(self):
+        return self._role
+
+    @role.setter
+    def role(self, value):
+        self._role = value
